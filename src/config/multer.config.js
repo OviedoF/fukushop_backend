@@ -9,11 +9,11 @@ const storage = multer.diskStorage({
     }
 }) // Configurar lugar de almacenaje y nombre del archivo
 
-const config = (propName) => multer({
+const config = multer({
     storage: storage,
     dest: path.join(__dirname, 'public', 'images'),
     fileFilter: (req, file, cb) => {
-        const fileTypes = /jpeg|jpg|png|gif|webp|jfif|JPG|JPEG|PNG|GIF|WEBP|JFIF/; // Tipos de imágenes permitidas
+        const fileTypes = /jpeg|jpg|png|gif|webp|jfif/; // Tipos de imágenes permitidas
         const mimeType = fileTypes.test(file.mimetype);
         const extName = fileTypes.test(path.extname(file.originalname)); // Testeo de tipos
 
@@ -23,6 +23,10 @@ const config = (propName) => multer({
             return cb('Error: El archivo debe ser una imágen válida'); // Fallo por tipo de imágen.
         }
     }
-}).array(propName); // la consulta va a responder a la key "images" en la petición.
+}).fields([
+    {name: "images", maxCount: 20 },
+    {name: "productBlackImages", maxCount: 20},
+    {name: "productWhiteImages", maxCount: 20}
+]); // la consulta va a responder a la key "images" en la petición.
 
 module.exports = config;

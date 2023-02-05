@@ -1,32 +1,26 @@
 const {Schema, model} = require('mongoose');
 
-const colorSchema = new Schema({
+const productColorSchema = new Schema({
     name: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    hex: {
         type: String,
         required: true
     },
-    images: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Image'
-    }]
-});
+    color: {
+        type: String,
+        required: true
+    }
+})
 
 const sizeSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     sizes: {
-        type: [String],
+        type: String,
         required: true
     }
-});
+})
 
 const productSchema = new Schema({
     name: {
@@ -63,8 +57,19 @@ const productSchema = new Schema({
         ref: 'Subcategory',
     },
     colors: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Color'
+        name: {
+            type: String,
+            required: true,
+            unique: true
+        },
+        hex: {
+            type: String,
+            required: true
+        },
+        images: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Image'
+        }]
     }],
     principalImage: {
         type: String,
@@ -96,7 +101,7 @@ const productSchema = new Schema({
 });
 
 module.exports = {
-    Color: model('Color', colorSchema),
+    ProductColor: model('ProductColor', productColorSchema),
     Size: model('Size', sizeSchema),
     Product: model('Product', productSchema)
 };
