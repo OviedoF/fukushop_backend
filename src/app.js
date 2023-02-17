@@ -4,7 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const fs = require('fs-extra');
 require('dotenv').config();
-const multerInit = require(path.join(__dirname, 'config', 'multer.config'))
+const {upload, configData} = require(path.join(__dirname, 'config', 'multer.config'))
 const createInitialRoles = require(path.join(__dirname, 'seeds', 'initialRoles'));
 const createInitialAdmin = require(path.join(__dirname, 'seeds', 'initialAdmin'));
 
@@ -28,7 +28,20 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(multerInit);
+app.use(configData);
+app.use((req, res, next) => {
+    console.log(req.fieldsAvailable);
+    upload.fields(req.fieldsAvailable)(req, res, (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).json({
+                ok: false,
+                message: err
+            });
+        }
+    });
+    next();
+});
 
 // configs
 // InitAgenda();

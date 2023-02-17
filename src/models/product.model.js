@@ -5,7 +5,11 @@ const productColorSchema = new Schema({
         type: String,
         required: true
     },
-    color: {
+    hex: {
+        type: String,
+        required: true
+    },
+    imageKey: {
         type: String,
         required: true
     }
@@ -16,7 +20,19 @@ const sizeSchema = new Schema({
         type: String,
         required: true
     },
-    sizes: {
+    chest: {
+        type: String,
+        required: true
+    },
+    hips: {
+        type: String,
+        required: true
+    },
+    waist: {
+        type: String,
+        required: true
+    },
+    height: {
         type: String,
         required: true
     }
@@ -40,7 +56,7 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
-    offer: {
+    discount: {
         type: Number,
         required: true
     },
@@ -66,17 +82,15 @@ const productSchema = new Schema({
             type: String,
             required: true
         },
-        images: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Image'
-        }]
-    }],
-    principalImage: {
-        type: String,
-        required: true
-    },
-    images: [{
-        type: String
+        imageKey: {
+            type: String,
+            required: true
+        },
+        principalImage: {
+            type: String,
+            required: true
+        },
+        images: [String]
     }],
     sizes: [{
         type: Schema.Types.ObjectId,
@@ -93,7 +107,11 @@ const productSchema = new Schema({
         type: Number
     },
     sold: {
-        type: Number
+        type: Number,
+        default: 0
+    },
+    featured: {
+        type: Boolean
     }
 }, {
     timestamps: true,

@@ -1,7 +1,8 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
+const deepPopulate = require('mongoose-deep-populate')(mongoose)
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
     userImage: {
         type: String,
         required: true
@@ -40,7 +41,7 @@ const userSchema = new Schema({
 
     roles: [{
         ref: 'Role',
-        type: Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId
     }],
 
     shoppingCart: [{
@@ -49,7 +50,7 @@ const userSchema = new Schema({
 
     shoppingHistory: [{
         ref: "Purchase",
-        type: Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId
     }],
 
     notifications: [{
@@ -67,12 +68,13 @@ const userSchema = new Schema({
     googleId: {
         type: String,
         required: false
-    },
-
+    }
 }, {
     timestamps: true,
     versionKey: false
 });
+
+userSchema.plugin(deepPopulate)
 
 userSchema.statics.encryptPassword = async (password) => {
     const salt = await bcrypt.genSalt(10);
@@ -83,4 +85,4 @@ userSchema.statics.comparePassword = async (password, receivedPassword) => {
     return await bcrypt.compare(password, receivedPassword);
 };
 
-module.exports = model('User', userSchema);
+module.exports = mongoose.model('User', userSchema);
