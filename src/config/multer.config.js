@@ -10,10 +10,6 @@ const configData = async (req, res, next) => {
     });
     fieldsAvailable.push({name: 'images', maxCount: 20})
 
-    console.log('Campos disponibles para imágenes: ', fieldsAvailable.map(el => el.name))
-
-    console.log('Se ha creado la configuración de multer para imágenes.')
-
     req.fieldsAvailable = fieldsAvailable;
 
     next();
@@ -40,7 +36,7 @@ const upload = multer({
             return cb('Error: El archivo debe ser una imágen válida'); // Fallo por tipo de imágen.
         }
     }
-});
+}); // Configurar multer
 
 module.exports = {
     upload,

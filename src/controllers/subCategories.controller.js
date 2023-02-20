@@ -1,5 +1,5 @@
 const path = require('path');
-const {SubCategory} = require(path.join(__dirname, '..', 'models', 'category.model'))
+const {SubCategory, Category} = require(path.join(__dirname, '..', 'models', 'category.model'))
 const subCategoryController = {};
 const imagesUtils = require(path.join(__dirname, '..', 'utils', 'images.utils'))
 require('dotenv').config();
@@ -36,16 +36,19 @@ subCategoryController.create = async (req, res) => {
         body.images = [];
 
         for (let index = 0; index < req.files.images.length; index++) {
-            const file = array[index];
+            const file = req.files.images[index];
             body.images.push(`${process.env.ROOT_URL}/images/${file.filename}`)
         }
 
         const newSubCategory = new SubCategory(req.body);
+
+        await Category.findByIdAndUpdate(req.body.category, {$push: {subCategories: newSubCategory._id}})
         await newSubCategory.save();
         
         res.status(201).send(newSubCategory);
     } catch (error) {
-        imagesUtils.deleteReqImages(req)
+        imagesUtils.deleteReqImages(req);
+        console.log(error)
         res.status(500).send({
             message: error.message
         });

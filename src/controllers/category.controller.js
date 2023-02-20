@@ -31,6 +31,7 @@ categoryController.create = async (req, res) => {
     try {
         const body = req.body;
         console.log(req.files)
+        console.log(req.body)
         
         if(!req.files.images) return res.status(500).send({message: 'Las imágenes son necesarias.'})
 

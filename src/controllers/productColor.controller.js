@@ -20,6 +20,7 @@ productColorController.create = async (req, res) => {
 
         res.status(201).send(newProductColor);
     } catch (error) {
+        console.log(error)
         res.status(500).send({
             message: error
         })

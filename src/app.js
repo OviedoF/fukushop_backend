@@ -30,17 +30,16 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(configData);
 app.use((req, res, next) => {
-    console.log(req.fieldsAvailable);
     upload.fields(req.fieldsAvailable)(req, res, (err) => {
         if (err) {
-            console.log(err);
-            return res.status(400).json({
+            res.status(400).json({
                 ok: false,
                 message: err
             });
+        } else {
+            next();
         }
     });
-    next();
 });
 
 // configs

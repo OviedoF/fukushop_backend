@@ -9,8 +9,8 @@ const subTypeSchema = new Schema({
         type: String,
         required: true
     },
-    image: {
-        type: String,
+    images: {
+        type: Array,
         required: true
     },
     type: {
@@ -28,8 +28,8 @@ const typeSchema = new Schema({
         type: String,
         required: true
     },
-    image: {
-        type: String,
+    images: {
+        type: Array,
         required: true
     },
     subTypes: [{

@@ -14,7 +14,7 @@ const SubCategorySchema = new Schema({
         required: true
     },
     images: {
-        type: String,
+        type: Array,
         required: true
     }
 })
@@ -28,10 +28,14 @@ const CategorySchema = new Schema({
         type: String,
         required: true
     },
-    subCategories: {
+    description: {
+        type: String,
+        required: true
+    },
+    subCategories: [{
         type: Schema.Types.ObjectId,
         ref: 'SubCategory'
-    }
+    }]
 })
 
 module.exports = {

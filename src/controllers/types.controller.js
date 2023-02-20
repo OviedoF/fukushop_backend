@@ -6,9 +6,10 @@ require('dotenv').config();
 
 typesController.getAll = async (req, res) => {
     try {
-        const types = await Type.find().populate('subCategories');
+        const types = await Type.find().populate('subTypes');
         res.status(200).send(types)
     } catch (error) {
+        console.log(error)
         res.status(500).send({
             message: error
         })
@@ -36,7 +37,7 @@ typesController.create = async (req, res) => {
         body.images = [];
 
         for (let index = 0; index < req.files.images.length; index++) {
-            const file = array[index];
+            const file = req.files.images[index];
             body.images.push(`${process.env.ROOT_URL}/images/${file.filename}`)
         }
 
@@ -45,6 +46,7 @@ typesController.create = async (req, res) => {
         
         res.status(201).send(newType);
     } catch (error) {
+        console.log(error)
         imagesUtils.deleteReqImages(req)
         res.status(500).send({
             message: error.message

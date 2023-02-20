@@ -1,5 +1,5 @@
 const path = require('path');
-const {SubType} = require(path.join(__dirname, '..', 'models', 'types.model'))
+const {SubType, Type} = require(path.join(__dirname, '..', 'models', 'types.model'))
 const subTypeController = {};
 
 subTypeController.getAll = async (req, res) => {
@@ -15,7 +15,20 @@ subTypeController.getAll = async (req, res) => {
 
 subTypeController.create = async (req, res) => {
     try {
+        const body = req.body;
+
+        if(!req.files) return res.status(500).send({message: 'Las imágenes son necesarias.'})
+
+        body.images = [];
+
+        for (let index = 0; index < req.files.images.length; index++) {
+            const file = req.files.images[index];
+            body.images.push(`${process.env.ROOT_URL}/images/${file.filename}`)
+        }
+
         const newSubType = new SubType(req.body);
+
+        await Type.findByIdAndUpdate(req.body.category, {$push: {subTypes: newSubType._id}})
         await newSubType.save();
 
         res.status(201).send(newSubType);
@@ -26,7 +39,7 @@ subTypeController.create = async (req, res) => {
     }
 };
 
-subTypeController.updateOne = async (req, res) => {
+subTypeController.update = async (req, res) => {
     try {
         const {id} = req.params;
         const updated = await SubType.findByIdAndUpdate(id, req.body, {
