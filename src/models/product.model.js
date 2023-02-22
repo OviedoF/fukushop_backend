@@ -5,7 +5,7 @@ const productColorSchema = new Schema({
         type: String,
         required: true
     },
-    hex: {
+    color: {
         type: String,
         required: true
     },
@@ -41,8 +41,7 @@ const sizeSchema = new Schema({
 const productSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     description: {
         type: String,
@@ -53,16 +52,10 @@ const productSchema = new Schema({
         required: true
     },
     priceWithOffer: {
-        type: Number,
-        required: true
+        type: Number
     },
     discount: {
-        type: Number,
-        required: true
-    },
-    stock: {
-        type: Number,
-        required: true
+        type: Number
     },
     category: {
         type: Schema.Types.ObjectId,
@@ -73,24 +66,19 @@ const productSchema = new Schema({
         ref: 'Subcategory',
     },
     colors: [{
-        name: {
-            type: String,
-            required: true,
-            unique: true
-        },
-        hex: {
-            type: String,
-            required: true
-        },
-        imageKey: {
-            type: String,
-            required: true
+        color: {
+          type: Schema.Types.ObjectId,
+          ref: 'ProductColor'
         },
         principalImage: {
-            type: String,
-            required: true
+          type: String,
+          required: true
         },
-        images: [String]
+        images: [String],
+        stock: {
+          type: Number,
+          required: true
+        },
     }],
     sizes: [{
         type: Schema.Types.ObjectId,
@@ -114,9 +102,11 @@ const productSchema = new Schema({
         type: Boolean
     }
 }, {
-    timestamps: true,
-    versionKey: false
+    timestamps: true
 });
+
+productSchema.index({ 'colors.color': 1 }, { unique: false });
+productSchema.index({ 'colors.name': 1 }, { unique: false });
 
 module.exports = {
     ProductColor: model('ProductColor', productColorSchema),

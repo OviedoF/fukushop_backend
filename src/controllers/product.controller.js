@@ -2,6 +2,7 @@ const path = require('path');
 const {Product, ProductColor} = require(path.join(__dirname, '..', 'models', 'product.model'))
 const productController = {};
 const {deleteReqImages} = require(path.join(__dirname, '..', 'utils', 'images.utils'));
+require('dotenv').config();
 
 productController.getAll = async (req, res) => {
     try {
@@ -31,32 +32,37 @@ productController.getOne = async (req, res) => {
 
 productController.create = async (req, res) => {
     try {
-        const {body, colors} = req.body;
-        console.log(JSON.parse(body));
-        console.log(colors);
-        console.log(req.files);
+        const body = JSON.parse(req.body.body);
+        const colors = JSON.parse(req.body.colors);
 
-        deleteReqImages(req);
-        // const ColorsKeys = await ProductColor.find({imageKey: true});
-        // const colors = [];
+        for (let index = 0; index < colors.length; index++) {
+            const color = colors[index];
+            
+            if(req.files[color.imageKey]) {
+                const images = req.files[color.imageKey].map((image, index) => {
+                    const {filename} = image;
+                    return `${process.env.ROOT_URL}/images/${filename}`;
+                })
 
-        // ColorsKeys.map(key => {
-        //     if(req.files[key]) {
-        //         const dataColor = body.colors.find(el => el.key == key);
-        //         // const {}
+                colors[index].principalImage = images.shift();
+                colors[index].images = images;
+            }
+        }
 
-        //         // colors.push({
-        //         //     name: dataColor.name,
-        //         //     hex: dataColor.hex,
-        //         //     principalImage: 
-        //         // })
-        //     }
-        // })
+        const product = new Product({
+            ...body,
+            colors
+        })
 
-        res.status(200).send({message: 'ok'});
+        console.log(product)
+
+        await product.save();
+
+        res.status(200).send({message: 'Producto creado correctamente!'});
     } catch (error) {
+        deleteReqImages(req);
         console.log(error)
-        res.status(500).send({message: 'Ha ocurrido un error'})
+        res.status(500).send({message: 'Ha ocurrido un error!'})
     }
 }
 
