@@ -57,6 +57,10 @@ const productSchema = new Schema({
     discount: {
         type: Number
     },
+    clothe_type:{
+        type: Schema.Types.ObjectId,
+        ref: 'Type',
+    },
     category: {
         type: Schema.Types.ObjectId,
         ref: 'Category',
