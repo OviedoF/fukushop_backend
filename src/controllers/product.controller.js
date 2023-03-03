@@ -6,7 +6,7 @@ require('dotenv').config();
 
 productController.getAll = async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find().deepPopulate(['clothe_type', 'category', 'subCategory', 'colors.color', 'sizes'])
 
         res.status(200).send(products);
     } catch (error) {

@@ -1,4 +1,6 @@
-const {Schema, model} = require('mongoose');
+const mongoose = require('mongoose');
+const deepPopulate = require('mongoose-deep-populate')(mongoose);
+const { Schema, model } = mongoose;
 
 const productColorSchema = new Schema({
     name: {
@@ -67,7 +69,7 @@ const productSchema = new Schema({
     },
     subCategory: {
         type: Schema.Types.ObjectId,
-        ref: 'Subcategory',
+        ref: 'SubCategory',
     },
     colors: [{
         color: {
@@ -109,8 +111,7 @@ const productSchema = new Schema({
     timestamps: true
 });
 
-productSchema.index({ 'colors.color': 1 }, { unique: false });
-productSchema.index({ 'colors.name': 1 }, { unique: false });
+productSchema.plugin(deepPopulate);
 
 module.exports = {
     ProductColor: model('ProductColor', productColorSchema),
