@@ -1,12 +1,12 @@
 const path = require('path');
-const {Product, ProductColor} = require(path.join(__dirname, '..', 'models', 'product.model'))
+const {Product, ProductVariant, ProductColor} = require(path.join(__dirname, '..', 'models', 'product.model'))
 const productController = {};
 const {deleteReqImages} = require(path.join(__dirname, '..', 'utils', 'images.utils'));
 require('dotenv').config();
 
 productController.getAll = async (req, res) => {
     try {
-        const products = await Product.find().deepPopulate(['clothe_type', 'category', 'subCategory', 'colors.color', 'sizes'])
+        const products = await Product.find().deepPopulate(['clothe_type', 'category', 'subCategory', 'variants.color', 'variants.size', 'variants.image', 'variants.gallery']);
 
         res.status(200).send(products);
     } catch (error) {
@@ -33,28 +33,36 @@ productController.getOne = async (req, res) => {
 productController.create = async (req, res) => {
     try {
         const body = JSON.parse(req.body.body);
-        const colors = JSON.parse(req.body.colors);
 
-        for (let index = 0; index < colors.length; index++) {
-            const color = colors[index];
-            
-            if(req.files[color.imageKey]) {
-                const images = req.files[color.imageKey].map((image, index) => {
-                    const {filename} = image;
-                    return `${process.env.ROOT_URL}/images/${filename}`;
-                })
+        const imagesKeys = Object.keys(req.files);
+        
+        for (const key of imagesKeys) {
+            const color = await ProductColor.findOne({imageKey: key});
 
-                colors[index].principalImage = images.shift();
-                colors[index].images = images;
+            if(color && body.variants) {
+                body.variants.forEach(variant => {
+                    if(variant.color === color._id.toString()) {
+                        variant.image = `${process.env.ROOT_URL}/images/${req.files[key][0].filename}`;
+                        variant.gallery = req.files[key].map((image, index) => {
+                            if(index !== 0) return `${process.env.ROOT_URL}/images/${image.filename}`;
+                        });
+                    }
+                });
             }
         }
 
-        const product = new Product({
-            ...body,
-            colors
-        })
+        const variantsCreated = [];
 
-        console.log(product)
+        for (const variant of body.variants) {
+            console.log(variant)
+            const productVariant = new ProductVariant(variant);
+            variantsCreated.push(productVariant._id);
+            await productVariant.save();
+        }
+
+        body.variants = variantsCreated;
+
+        const product = new Product(body);
 
         await product.save();
 

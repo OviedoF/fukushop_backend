@@ -40,6 +40,25 @@ const sizeSchema = new Schema({
     }
 })
 
+const productVariantSchema = new Schema({
+    color: {
+        type: Schema.Types.ObjectId,
+        ref: 'ProductColor'
+    },
+    size: {
+        type: Schema.Types.ObjectId,
+        ref: 'Size'
+    },
+    stock: {
+        type: Number
+    },
+    image: {
+        type: String,
+        required: true
+    },
+    gallery: [String]
+})
+
 const productSchema = new Schema({
     name: {
         type: String,
@@ -71,25 +90,30 @@ const productSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'SubCategory',
     },
-    colors: [{
-        color: {
-          type: Schema.Types.ObjectId,
-          ref: 'ProductColor'
-        },
-        principalImage: {
-          type: String,
-          required: true
-        },
-        images: [String],
-        stock: {
-          type: Number,
-          required: true
-        },
-    }],
-    sizes: [{
+    variants: [{
         type: Schema.Types.ObjectId,
-        ref: 'Size'
+        ref: 'ProductVariant'
     }],
+    // colors: [{
+    //     color: {
+    //       type: Schema.Types.ObjectId,
+    //       ref: 'ProductColor'
+    //     },
+    //     principalImage: {
+    //       type: String,
+    //       required: true
+    //     },
+    //     images: [String],
+    //     sizes: [{
+    //         size: {
+    //             type: Schema.Types.ObjectId,
+    //             ref: 'Size'
+    //         },
+    //         stock: {
+    //             type: Number
+    //         },
+    //     }]
+    // }],
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review'
@@ -116,6 +140,7 @@ productSchema.plugin(deepPopulate);
 module.exports = {
     ProductColor: model('ProductColor', productColorSchema),
     Size: model('Size', sizeSchema),
-    Product: model('Product', productSchema)
+    Product: model('Product', productSchema),
+    ProductVariant: model('ProductVariant', productVariantSchema)
 };
 
