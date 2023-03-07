@@ -4,7 +4,7 @@ const path = require('path');
 const productController = require(path.join(__dirname, '..', 'controllers', 'product.controller'));
 
 router.get('/', productController.getAll);
-router.get('/:id', productController.getOne);
+router.get('/:name', productController.getOne);
 router.post('/', productController.create);
 
 module.exports = router;

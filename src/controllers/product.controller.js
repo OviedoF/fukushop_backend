@@ -17,9 +17,9 @@ productController.getAll = async (req, res) => {
 
 productController.getOne = async (req, res) => {
     try {
-        const {id} = req.params;
+        const {name} = req.params;
 
-        const product = await Product.findById(id);
+        const product = await Product.findOne({name}).deepPopulate(['clothe_type', 'category', 'subCategory', 'variants.color', 'variants.size']);
 
         if(!product) return res.status(404).send({message: 'Producto inexistente'});
 
