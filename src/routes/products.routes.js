@@ -5,6 +5,8 @@ const productController = require(path.join(__dirname, '..', 'controllers', 'pro
 
 router.get('/', productController.getAll);
 router.get('/:name', productController.getOne);
+
+router.post('/filter', productController.filter);
 router.post('/', productController.create);
 
 module.exports = router;

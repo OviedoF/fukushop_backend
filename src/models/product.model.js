@@ -22,22 +22,22 @@ const sizeSchema = new Schema({
         type: String,
         required: true
     },
-    chest: {
-        type: String,
-        required: true
-    },
-    hips: {
-        type: String,
-        required: true
-    },
-    waist: {
-        type: String,
-        required: true
-    },
     height: {
         type: String,
         required: true
-    }
+    },
+    width: {
+        type: String,
+        required: true
+    },
+    sleeves: {
+        type: String,
+        required: true
+    },
+    shoulders: {
+        type: String,
+        required: true
+    },
 })
 
 const productVariantSchema = new Schema({
