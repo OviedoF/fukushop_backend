@@ -7,6 +7,7 @@ require('dotenv').config();
 const {upload, configData} = require(path.join(__dirname, 'config', 'multer.config'))
 const createInitialRoles = require(path.join(__dirname, 'seeds', 'initialRoles'));
 const createInitialAdmin = require(path.join(__dirname, 'seeds', 'initialAdmin'));
+const saveImagesToCloudinary = require(path.join(__dirname, 'middlewares', 'SaveImagesToCloudinary'));
 
 // initialize
 require(path.join(__dirname, 'database.js'));
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
         }
     });
 });
+app.use(saveImagesToCloudinary);
 
 // configs
 // InitAgenda();

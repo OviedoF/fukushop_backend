@@ -15,12 +15,7 @@ const configData = async (req, res, next) => {
     next();
 }
 
-const storage = multer.diskStorage({
-    destination: path.join(__dirname, '..', 'public', 'images'),
-    filename: (req, file, cb) => {
-        cb(null, uuidv4() + path.extname(file.originalname).toLowerCase());
-    }
-}) // Configurar lugar de almacenaje y nombre del archivo
+const storage = multer.memoryStorage(); // Almacenamiento en memoria
 
 const upload = multer({
     storage: storage,

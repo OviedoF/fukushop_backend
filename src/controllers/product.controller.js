@@ -3,6 +3,7 @@ const {Product, ProductVariant, ProductColor} = require(path.join(__dirname, '..
 const productController = {};
 const {deleteReqImages} = require(path.join(__dirname, '..', 'utils', 'images.utils'));
 require('dotenv').config();
+const cloudinary = require(path.join(__dirname, '..', 'config', 'cloudinary.config'));
 
 productController.getAll = async (req, res) => {
     try {
@@ -77,6 +78,7 @@ productController.filter = async (req, res) => {
 productController.create = async (req, res) => {
     try {
         const body = JSON.parse(req.body.body);
+        console.log(req.files)
 
         const imagesKeys = Object.keys(req.files);
         
@@ -86,9 +88,9 @@ productController.create = async (req, res) => {
             if(color && body.variants) {
                 body.variants.forEach(variant => {
                     if(variant.color === color._id.toString()) {
-                        variant.image = `${process.env.ROOT_URL}/images/${req.files[key][0].filename}`;
+                        variant.image = req.files[key][0].cloudinary_url;
                         variant.gallery = req.files[key].map((image, index) => {
-                            if(index !== 0) return `${process.env.ROOT_URL}/images/${image.filename}`;
+                            if(index !== 0) return image.cloudinary_url;
                         });
                     }
                 });
