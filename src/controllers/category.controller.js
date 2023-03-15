@@ -35,7 +35,7 @@ categoryController.create = async (req, res) => {
         
         if(!req.files.images) return res.status(500).send({message: 'Las imágenes son necesarias.'})
 
-        body.image = `${process.env.ROOT_URL}/images/${req.files.images[0].filename}`;
+        body.image = req.files.images[0].filename;
 
         const newCategory = new Category(body);
         await newCategory.save();
