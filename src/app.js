@@ -8,6 +8,7 @@ const {upload, configData} = require(path.join(__dirname, 'config', 'multer.conf
 const createInitialRoles = require(path.join(__dirname, 'seeds', 'initialRoles'));
 const createInitialAdmin = require(path.join(__dirname, 'seeds', 'initialAdmin'));
 const saveImagesToCloudinary = require(path.join(__dirname, 'middlewares', 'SaveImagesToCloudinary'));
+const convertImagesToWebPFromBuffer = require(path.join(__dirname, 'middlewares', 'convertImagesToWebPFromBuffer'));
 
 // initialize
 require(path.join(__dirname, 'database.js'));
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
         }
     });
 });
+app.use(convertImagesToWebPFromBuffer);
 app.use(saveImagesToCloudinary);
 
 // configs

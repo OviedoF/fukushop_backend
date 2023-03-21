@@ -3,6 +3,7 @@ const cloudinary = require(path.join(__dirname, '..', 'config', 'cloudinary.conf
 
 function uploadToCloudinary(req, res, next) {
   const files = req.files;
+  console.log(files)
 
   // Si no hay archivos, continuar con la siguiente función
   if (!files) {
