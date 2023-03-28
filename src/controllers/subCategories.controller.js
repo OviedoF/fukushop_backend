@@ -60,14 +60,23 @@ subCategoryController.update = async (req, res) => {
         const {id} = req.params;
         const body = req.body;
 
+        const subCategory = await SubCategory.findById(id);
+
+        if(!subCategory) return res.status(404).send({message: 'La categoría no existe.'})
+
         if(req.files && req.files.images) {
-            for (let index = 0; index < req.files.images.length; index++) {
-                const file = array[index];
-                body.images.push(`${process.env.ROOT_URL}/images/${file.filename}`)
+            body.image = `${process.env.ROOT_URL}/images/${req.files.images[0].filename}`;
+            
+            if(subCategory.image) {
+                const filename = subCategory.image.split('/images/')[1];
+                const dir = path.join(__dirname, '..', 'public', 'images', filename);
+                imagesUtils.deleteImage(dir)
             }
         }
 
-        const newSubCategory = await SubCategory.findByIdAndUpdate(id, req.body);(req.body);
+        const newSubCategory = await SubCategory.findByIdAndUpdate(id, body, {
+            new: true
+        });
         
         res.status(201).send(newSubCategory);
     } catch (error) {

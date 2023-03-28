@@ -42,7 +42,23 @@ subTypeController.create = async (req, res) => {
 subTypeController.update = async (req, res) => {
     try {
         const {id} = req.params;
-        const updated = await SubType.findByIdAndUpdate(id, req.body, {
+        const body = req.body;
+        
+        const subType = await SubType.findById(id);
+
+        if(!subType) return res.status(404).send({message: 'La categoría no existe.'})
+
+        if(req.files && req.files.images) {
+            body.image = `${process.env.ROOT_URL}/images/${req.files.images[0].filename}`;
+            
+            if(subType.image) {
+                const filename = subType.image.split('/images/')[1];
+                const dir = path.join(__dirname, '..', 'public', 'images', filename);
+                imagesUtils.deleteImage(dir)
+            }
+        }
+
+        const updated = await SubType.findByIdAndUpdate(id, body, {
             new: true
         });
 

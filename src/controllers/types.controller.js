@@ -59,14 +59,21 @@ typesController.update = async (req, res) => {
         const {id} = req.params;
         const body = req.body;
 
+        const type = await Type.findById(id);
+
+        if(!type) return res.status(404).send({message: 'La categoría no existe.'})
+
         if(req.files && req.files.images) {
-            for (let index = 0; index < req.files.images.length; index++) {
-                const file = array[index];
-                body.images.push(`${process.env.ROOT_URL}/images/${file.filename}`)
+            body.image = `${process.env.ROOT_URL}/images/${req.files.images[0].filename}`;
+            
+            if(type.image) {
+                const filename = type.image.split('/images/')[1];
+                const dir = path.join(__dirname, '..', 'public', 'images', filename);
+                imagesUtils.deleteImage(dir)
             }
         }
 
-        const actualizedType = await Type.findByIdAndUpdate(id, req.body);
+        const actualizedType = await Type.findByIdAndUpdate(id, body);
         
         res.status(201).send(actualizedType);
     } catch (error) {

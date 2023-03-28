@@ -54,14 +54,21 @@ categoryController.update = async (req, res) => {
         const {id} = req.params;
         const body = req.body;
 
+        const category = await Category.findById(id);
+
+        if(!category) return res.status(404).send({message: 'La categoría no existe.'})
+
         if(req.files && req.files.images) {
-            for (let index = 0; index < req.files.images.length; index++) {
-                const file = array[index];
-                body.images.push(`${process.env.ROOT_URL}/images/${file.filename}`)
+            body.image = `${process.env.ROOT_URL}/images/${req.files.images[0].filename}`;
+            
+            if(category.image) {
+                const filename = category.image.split('/images/')[1];
+                const dir = path.join(__dirname, '..', 'public', 'images', filename);
+                imagesUtils.deleteImage(dir)
             }
         }
 
-        const newCategory = await Category.findByIdAndUpdate(id, req.body);
+        const newCategory = await Category.findByIdAndUpdate(id, body);
         
         res.status(201).send(newCategory);
     } catch (error) {

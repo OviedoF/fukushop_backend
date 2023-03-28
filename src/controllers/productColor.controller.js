@@ -30,7 +30,7 @@ productColorController.create = async (req, res) => {
 productColorController.updateOne = async (req, res) => {
     try {
         const {id} = req.params;
-        console.log(req.body)
+        
         const updated = await ProductColor.findByIdAndUpdate(id, req.body, {
             new: true
         });
