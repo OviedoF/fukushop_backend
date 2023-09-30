@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@cluster0.iwwsjqo.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb://127.0.0.1:27017/fukuapi`;
 
 mongoose.set('strictQuery', true);
 
 mongoose.connect(uri, {
-    keepAlive: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
 })

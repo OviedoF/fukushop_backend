@@ -78,7 +78,6 @@ productController.filter = async (req, res) => {
 productController.create = async (req, res) => {
     try {
         const body = JSON.parse(req.body.body);
-        console.log(req.files)
 
         const imagesKeys = Object.keys(req.files);
         
@@ -88,9 +87,9 @@ productController.create = async (req, res) => {
             if(color && body.variants) {
                 body.variants.forEach(variant => {
                     if(variant.color === color._id.toString()) {
-                        variant.image = req.files[key][0].cloudinary_url;
+                        variant.image = `${process.env.ROOT_URL}/uploads/${req.files[key][0].filename}`;
                         variant.gallery = req.files[key].map((image, index) => {
-                            if(index !== 0) return image.cloudinary_url;
+                            if(index !== 0) return `${process.env.ROOT_URL}/uploads/${image.filename}`;
                         });
                     }
                 });

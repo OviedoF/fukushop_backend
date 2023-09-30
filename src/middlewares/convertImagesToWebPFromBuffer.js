@@ -17,8 +17,10 @@ async function convertImagesToWebPFromBuffer(req, res, next) {
   
       // Iterar sobre cada archivo de imagen y convertirlo a WebP
       for (const file of files) {
-        if (file.mimetype.startsWith('image/') && file.mimetype !== 'image/webp') {
+        if (file.mimetype.startsWith('image/') && file.mimetype !== 'image/webp' && file.buffer) {
           try {
+            console.log(`[MIDDLEWARE] Converting ${file.originalname} to WebP`);
+            console.log(file)
             const convertedBuffer = await sharp(file.buffer).toFormat('webp').toBuffer();
   
             // Actualizar el objeto del archivo con los datos de la imagen convertida

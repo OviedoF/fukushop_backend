@@ -35,7 +35,7 @@ categoryController.create = async (req, res) => {
         
         if(!req.files.images) return res.status(500).send({message: 'Las imágenes son necesarias.'})
 
-        body.image = req.files.images[0].filename;
+        body.image = `${process.env.ROOT_URL}/uploads/${req.files.images[0].filename}`;
 
         const newCategory = new Category(body);
         await newCategory.save();
@@ -59,11 +59,11 @@ categoryController.update = async (req, res) => {
         if(!category) return res.status(404).send({message: 'La categoría no existe.'})
 
         if(req.files && req.files.images) {
-            body.image = `${process.env.ROOT_URL}/images/${req.files.images[0].filename}`;
+            body.image = `${process.env.ROOT_URL}/uploads/${req.files.images[0].filename}`;
             
             if(category.image) {
-                const filename = category.image.split('/images/')[1];
-                const dir = path.join(__dirname, '..', 'public', 'images', filename);
+                const filename = category.image.split('/uploads/')[1];
+                const dir = path.join(__dirname, '..', 'public', 'uploads', filename);
                 imagesUtils.deleteImage(dir)
             }
         }
@@ -86,7 +86,7 @@ categoryController.delete = async (req, res) => {
         
         if(deleted.images) {
             deleted.images.forEach(file => {
-                const filename = file.split('/images/')[1];
+                const filename = file.split('/uploads/')[1];
                 const dir = path.join(__dirname, '..', 'public', 'images', filename);
                 imagesUtils.deleteImage(dir)
             })

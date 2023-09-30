@@ -15,7 +15,7 @@ authController.signUp = async (req, res) => {
 
         const newUser = new User({
             ...req.body,
-            userImage: `${process.env.ROOT_URL}/images/${filename}`,
+            userImage: `${process.env.ROOT_URL}/uploads/${filename}`,
             password: await User.encryptPassword(password),
             roles: [ userRole._id ],
             wallet: {

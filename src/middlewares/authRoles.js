@@ -40,7 +40,7 @@ const isAdmin = async (req, res, next) => {
     } catch (error) {
         if(req.files[0]){
             const {filename} = req.files[0];
-            const dirname = path.join(__dirname, '..', 'public', 'images', filename);
+            const dirname = path.join(__dirname, '..', 'public', 'uploads', filename);
             deleteImage(dirname);
         }
         return res.status(500).send(error);

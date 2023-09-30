@@ -23,7 +23,7 @@ subTypeController.create = async (req, res) => {
 
         for (let index = 0; index < req.files.images.length; index++) {
             const file = req.files.images[index];
-            body.images.push(`${process.env.ROOT_URL}/images/${file.filename}`)
+            body.images.push(`${process.env.ROOT_URL}/uploads/${file.filename}`)
         }
 
         const newSubType = new SubType(req.body);
@@ -49,11 +49,11 @@ subTypeController.update = async (req, res) => {
         if(!subType) return res.status(404).send({message: 'La categoría no existe.'})
 
         if(req.files && req.files.images) {
-            body.image = `${process.env.ROOT_URL}/images/${req.files.images[0].filename}`;
+            body.image = `${process.env.ROOT_URL}/uploads/${req.files.images[0].filename}`;
             
             if(subType.image) {
-                const filename = subType.image.split('/images/')[1];
-                const dir = path.join(__dirname, '..', 'public', 'images', filename);
+                const filename = subType.image.split('/uploads/')[1];
+                const dir = path.join(__dirname, '..', 'public', 'uploads', filename);
                 imagesUtils.deleteImage(dir)
             }
         }

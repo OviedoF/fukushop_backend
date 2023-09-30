@@ -20,7 +20,7 @@ imagesUtils.deleteReqImages = (req) => {
       keys.forEach(key => {
         req.files[key].forEach(file => {
           const filename = file.filename;
-          const dirname = path.join(__dirname, '..', 'public', 'images', filename);
+          const dirname = path.join(__dirname, '..', 'public', 'uploads', filename);
           imagesUtils.deleteImage(dirname);
         })
       })

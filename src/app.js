@@ -43,8 +43,8 @@ app.use((req, res, next) => {
         }
     });
 });
-app.use(convertImagesToWebPFromBuffer);
-app.use(saveImagesToCloudinary);
+// app.use(convertImagesToWebPFromBuffer);
+// app.use(saveImagesToCloudinary);
 
 // configs
 // InitAgenda();
