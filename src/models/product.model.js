@@ -94,26 +94,33 @@ const productSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'ProductVariant'
     }],
-    // colors: [{
-    //     color: {
-    //       type: Schema.Types.ObjectId,
-    //       ref: 'ProductColor'
-    //     },
-    //     principalImage: {
-    //       type: String,
-    //       required: true
-    //     },
-    //     images: [String],
-    //     sizes: [{
-    //         size: {
-    //             type: Schema.Types.ObjectId,
-    //             ref: 'Size'
-    //         },
-    //         stock: {
-    //             type: Number
-    //         },
-    //     }]
-    // }],
+    colors: [{
+        color: {
+            type: Schema.Types.ObjectId,
+            ref: 'ProductColor'
+        },
+        imageKey: {
+            type: String,
+            required: true
+        },
+        name: {
+            type: String,
+            required: true
+        },
+        principalImage: {
+            type: String,
+            required: true
+        },
+        stock: {
+            type: Number,
+            required: true
+        },
+        images: [String],
+        hex: {
+            type: String,
+            required: true
+        }
+    }],
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review'

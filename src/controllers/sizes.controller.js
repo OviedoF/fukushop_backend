@@ -1,5 +1,5 @@
 const path = require('path');
-const {Size} = require(path.join(__dirname, '..', 'models', 'product.model'))
+const { Size } = require(path.join(__dirname, '..', 'models', 'product.model'))
 const sizesController = {};
 
 sizesController.getAll = async (req, res) => {
@@ -28,7 +28,7 @@ sizesController.create = async (req, res) => {
 
 sizesController.updateOne = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         console.log(req.body)
         const updated = await Size.findByIdAndUpdate(id, req.body, {
             new: true
@@ -44,10 +44,10 @@ sizesController.updateOne = async (req, res) => {
 
 sizesController.delete = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const deleted = await Size.findByIdAndDelete(id);
 
-        if(!deleted) return res.status(404).send({
+        if (!deleted) return res.status(404).send({
             message: 'Tamaño de prenda inexistente.'
         })
 

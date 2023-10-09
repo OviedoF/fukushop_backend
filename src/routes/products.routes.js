@@ -9,4 +9,8 @@ router.get('/:name', productController.getOne);
 router.post('/filter', productController.filter);
 router.post('/', productController.create);
 
+router.put('/:id', productController.update);
+
+router.delete('/:id', productController.delete);
+
 module.exports = router;

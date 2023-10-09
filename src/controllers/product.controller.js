@@ -3,7 +3,6 @@ const {Product, ProductVariant, ProductColor} = require(path.join(__dirname, '..
 const productController = {};
 const {deleteReqImages} = require(path.join(__dirname, '..', 'utils', 'images.utils'));
 require('dotenv').config();
-const cloudinary = require(path.join(__dirname, '..', 'config', 'cloudinary.config'));
 
 productController.getAll = async (req, res) => {
     try {
@@ -78,8 +77,29 @@ productController.filter = async (req, res) => {
 productController.create = async (req, res) => {
     try {
         const body = JSON.parse(req.body.body);
-
         const imagesKeys = Object.keys(req.files);
+        const colors = body.colors.map((color) => {
+            const receiveImages = req.files[color.imageKey];
+
+            if(!receiveImages) return color;
+
+            const principalImage = `${process.env.ROOT_URL}/uploads/${receiveImages[0].filename}`;
+            const images = receiveImages.map((image, index) => {
+                if(index !== 0) return `${process.env.ROOT_URL}/uploads/${image.filename}`;
+            });
+            images.shift();
+
+            return {...color, principalImage, images};
+        });
+
+        for (const color of colors) {
+            const colorSaved = await ProductColor.findById(color.color);
+            color.hex = colorSaved.color;
+        }
+
+        console.log(colors)
+
+        body.colors = colors;
         
         for (const key of imagesKeys) {
             const color = await ProductColor.findOne({imageKey: key});
@@ -96,17 +116,6 @@ productController.create = async (req, res) => {
             }
         }
 
-        const variantsCreated = [];
-
-        for (const variant of body.variants) {
-            console.log(variant)
-            const productVariant = new ProductVariant(variant);
-            variantsCreated.push(productVariant._id);
-            await productVariant.save();
-        }
-
-        body.variants = variantsCreated;
-
         const product = new Product(body);
 
         await product.save();
@@ -119,6 +128,68 @@ productController.create = async (req, res) => {
     }
 }
 
+productController.update = async (req, res) => {
+    try {
+        const body = JSON.parse(req.body.body);
+        const imagesKeys = Object.keys(req.files);
+        const colors = body.colors.map(color => {
+            const receiveImages = req.files[color.imageKey];
 
+            if(!receiveImages) return color;
+
+            const principalImage = `${process.env.ROOT_URL}/uploads/${receiveImages[0].filename}`;
+            const images = receiveImages.map((image, index) => {
+                if(index !== 0) return `${process.env.ROOT_URL}/uploads/${image.filename}`;
+            });
+            images.shift();
+
+            return {...color, principalImage, images};
+        });
+
+        body.colors = colors;
+        
+        for (const key of imagesKeys) {
+            const color = await ProductColor.findOne({imageKey: key});
+
+            if(color && body.variants) {
+                body.variants.forEach(variant => {
+                    if(variant.color === color._id.toString()) {
+                        variant.image = `${process.env.ROOT_URL}/uploads/${req.files[key][0].filename}`;
+                        variant.gallery = req.files[key].map((image, index) => {
+                            if(index !== 0) return `${process.env.ROOT_URL}/uploads/${image.filename}`;
+                        });
+                    }
+                });
+            }
+        }
+
+        const product = await Product.findByIdAndUpdate(body._id, body, {new: true});
+
+        res.status(200).send({message: 'Producto editado correctamente!', product});
+    } catch (error) {
+        deleteReqImages(req);
+        console.log(error)
+        res.status(500).send({message: 'Ha ocurrido un error!'})
+    }
+}
+
+productController.delete = async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        await Product.findByIdAndDelete(id);
+
+        res.status(200).send({
+            message: 'Producto eliminado correctamente!',
+            status: true
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: 'Ha ocurrido un error!',
+            status: false
+        })
+    }
+}
 
 module.exports = productController;
