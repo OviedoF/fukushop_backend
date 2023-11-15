@@ -80,16 +80,15 @@ productController.create = async (req, res) => {
         const imagesKeys = Object.keys(req.files);
         const colors = body.colors.map((color) => {
             const receiveImages = req.files[color.imageKey];
+            console.log(receiveImages)
 
             if(!receiveImages) return color;
 
             const principalImage = `${process.env.ROOT_URL}/uploads/${receiveImages[0].filename}`;
-            const images = receiveImages.map((image, index) => {
-                if(index !== 0) return `${process.env.ROOT_URL}/uploads/${image.filename}`;
-            });
-            images.shift();
+            const reverseImage = `${process.env.ROOT_URL}/uploads/${receiveImages[1].filename}`;;
+            const fullImage = `${process.env.ROOT_URL}/uploads/${receiveImages[2].filename}`;;
 
-            return {...color, principalImage, images};
+            return {...color, principalImage, reverseImage, fullImage};
         });
 
         for (const color of colors) {
@@ -108,9 +107,11 @@ productController.create = async (req, res) => {
                 body.variants.forEach(variant => {
                     if(variant.color === color._id.toString()) {
                         variant.image = `${process.env.ROOT_URL}/uploads/${req.files[key][0].filename}`;
-                        variant.gallery = req.files[key].map((image, index) => {
-                            if(index !== 0) return `${process.env.ROOT_URL}/uploads/${image.filename}`;
-                        });
+                        variant.backImage = `${process.env.ROOT_URL}/uploads/${req.files[key][1].filename}`;;
+                        variant.fullImage = `${process.env.ROOT_URL}/uploads/${req.files[key][2].filename}`;;
+                        // variant.gallery = req.files[key].map((image, index) => {
+                        //     if(index > 2) return `${process.env.ROOT_URL}/uploads/${image.filename}`;
+                        // });
                     }
                 });
             }

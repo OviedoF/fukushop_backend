@@ -56,7 +56,18 @@ const productVariantSchema = new Schema({
         type: String,
         required: true
     },
-    gallery: [String]
+    backImage: {
+        type: String,
+        required: true
+    },
+    fullImage: {
+        type: String,
+        required: true
+    },
+    gallery: {
+        type: [String],
+        default: []
+    }
 })
 
 const productSchema = new Schema({
@@ -108,6 +119,14 @@ const productSchema = new Schema({
             required: true
         },
         principalImage: {
+            type: String,
+            required: true
+        },
+        reverseImage: {
+            type: String,
+            required: true
+        },
+        fullImage: {
             type: String,
             required: true
         },
